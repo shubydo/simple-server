@@ -1,0 +1,43 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  GO_VERSION: 1.20
+
+# Lint, run go tests, and build the binary
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      
+      - name: Install Go dependencies
+        run: make tidy
+
+      # Use super-linter to lint the code
+      - name: Lint
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Run go tests and post coverage as a comment
+      - name: Test
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          verbose: true
+
+      # Build the binary
+      - name: Build
+        run: make build
