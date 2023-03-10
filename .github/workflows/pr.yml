@@ -8,20 +8,17 @@ on:
 env:
   GO_VERSION: 1.20
 
+defaults:
+  run:
+    shell: bash
+
 # Lint, run go tests, and build the binary
 jobs:
-  build:
+  lint: 
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Go ${{ env.GO_VERSION }}
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ env.GO_VERSION }}
-      
-      - name: Install Go dependencies
-        run: make tidy
-
       # Use super-linter to lint the code
       - name: Lint
         uses: github/super-linter@v4
@@ -29,6 +26,45 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  # Check if unused dependencies are present using go mod tidy -v and fail if any are found
+  tidy:
+    name: Tidy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Set up Go ${{ env.GO_VERSION }}"
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      
+      - name: Check go dependencies
+        run: make tidy
+
+      - name: Check if tidy is needed
+        run: |
+          # Use git status to check if there are any changes to
+          if [[ -n $(git status -s) ]]; then
+            echo "go mod tidy is needed"
+            git status
+            git diff
+            exit 1
+          fi
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Set up Go ${{ env.GO_VERSION }}"
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      
+      - name: Install Go dependencies
+        run: make tidy
 
       # Run go tests and post coverage as a comment
       - name: Test
@@ -37,7 +73,20 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
           verbose: true
+  
 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Set up Go ${{ env.GO_VERSION }}"
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+          
       # Build the binary
       - name: Build
         run: make build

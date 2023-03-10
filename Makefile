@@ -9,6 +9,7 @@ all: build test
 tidy:
 	@echo "Tidying go.mod..."
 	go mod tidy -v
+	
 
 # Build the binary
 build: clean tidy
@@ -23,7 +24,8 @@ run: build
 # Run the tests
 test: clean tidy
 	@echo "Running tests..."
-	go test -v ./...
+	go clean -testcache
+	go test -v -cover ./...
 
 # Clean the binary
 clean:
