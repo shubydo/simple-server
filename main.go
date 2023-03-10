@@ -6,16 +6,6 @@ import (
 	"net/http"
 )
 
-func main() {
-	initHandlers()
-
-	port := 8080
-	err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
-	if err != nil {
-		log.Fatalf("Error occured: %v\n", err)
-	}
-}
-
 func initHandlers() {
 	http.HandleFunc("/hello", handleHello)
 }
@@ -28,4 +18,14 @@ func handleHello(w http.ResponseWriter, r *http.Request) {
 
 	// Return "Method not allowed" if not a GET request
 	fmt.Fprintf(w, "Method not allowed")
+}
+
+func main() {
+	initHandlers()
+
+	port := 8080
+	err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+	if err != nil {
+		log.Fatalf("Error occured: %v\n", err)
+	}
 }
