@@ -1,11 +1,11 @@
-FROM golang:1.20 AS build
+FROM golang:1.20.2 AS build
 
 WORKDIR /app
 COPY . .
 RUN CGO_ENABLED=0 go build -o simple-server
 
 FROM build AS test
-RUN go test -v
+RUN make test
 
 FROM scratch AS final
 
