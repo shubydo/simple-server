@@ -14,7 +14,7 @@ tidy:
 # Build the binary
 build: clean tidy
 	@echo "Building $(GO_BINARY_NAME)..."
-	go build -ldflags $(LDFLAGS) -o $(GO_BINARY_NAME) main.go
+	go build -ldflags $(LDFLAGS) -o $(GO_BINARY_NAME) cmd/$(GO_BINARY_NAME)/main.go
 
 # Run the binary
 run: build

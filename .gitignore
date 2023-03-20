@@ -1,6 +1,6 @@
 # Binaries for programs and plugins
-*.exe
 *.exe~
+*.exe
 *.dll
 *.so
 *.dylib
@@ -12,6 +12,13 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
 
-simple-server*
+# Binary files 
+*simple-server!(*.go)
+
+
+# Editor directories and files
+.idea
+.vscode
+*.swp*
