@@ -1,4 +1,4 @@
-package main
+package handlers
 
 // Go did not recognize/resolve  initHandlers() not being able to be found in the main package
 // func InitHandlers() {

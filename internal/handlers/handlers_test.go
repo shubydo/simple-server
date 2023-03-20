@@ -1,4 +1,4 @@
-package main
+package handlers
 
 // func TestHandleHello(t *testing.T) {
 // 	tests := []struct {
