@@ -8,7 +8,7 @@ type server struct {
 	// logger *logger
 }
 
-func (s *sever) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.router.ServeHTTP(w, r)
 }
 

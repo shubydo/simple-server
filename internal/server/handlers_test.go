@@ -28,7 +28,8 @@ func TestHandleHello(t *testing.T) {
 			request, _ := http.NewRequest(tt.requestMethod, "/hello", nil)
 			response := httptest.NewRecorder()
 
-			handleHello(response, request)
+			s := newServer()
+			s.handleHello(response, request)
 
 			actual := response.Body.String()
 			if actual != tt.expected {

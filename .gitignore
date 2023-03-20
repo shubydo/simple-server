@@ -14,11 +14,16 @@
 # Dependency directories (remove the comment below to include it)
 vendor/
 
-# Binary files 
-*simple-server!(*.go)
+# Binary files
+# Ignore binary files that have same name sas directories
+# e.g. /vendor/github.com/golang/protobuf/protoc-gen-go
+# Ignore binary files that are not go files?
+
 
 
 # Editor directories and files
 .idea
 .vscode
 *.swp*
+.DS_Store
+
