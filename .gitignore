@@ -1,6 +1,6 @@
 # Binaries for programs and plugins
-*.exe
 *.exe~
+*.exe
 *.dll
 *.so
 *.dylib
@@ -12,6 +12,18 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
 
-simple-server*
+# Binary files
+# Ignore binary files that have same name sas directories
+# e.g. /vendor/github.com/golang/protobuf/protoc-gen-go
+# Ignore binary files that are not go files?
+server
+bin
+
+
+# Editor directories and files
+.idea
+.vscode
+*.swp*
+.DS_Store

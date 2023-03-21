@@ -1,3 +1,4 @@
+---
 name: Pull Request
 
 on:
@@ -49,13 +50,11 @@ jobs:
       - name: Check go dependencies
         run: make tidy
 
-      - name: Check if tidy is needed
+      - name: Check if module was tidy
         run: |
-          # Use git status to check if there are any changes to
-          if [[ -n $(git status -s) ]]; then
-            echo "go mod tidy is needed"
-            git status
-            git diff
+          # Check if there are any changes to the go.mod and go.sum files
+          if [[ -n "$(git status --porcelain go.mod go.sum)" ]]; then
+            echo "go.mod and/or go.sum were not tidy. Please run 'go mod tidy -v' and commit the changes."
             exit 1
           fi
 
