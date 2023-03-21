@@ -3,9 +3,8 @@ package server
 import "net/http"
 
 type server struct {
-	router *router
-	// db *someDB
-	// logger *logger
+	router *http.ServeMux
+	logger interface{}
 }
 
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -13,38 +12,15 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func newServer() *server {
-	s := &server{}
+	s := &server{
+		router: http.NewServeMux(),
+	}
 	s.routes()
 
 	return s
 }
 
-// package server
-
-// // func initHandlers() {
-// // 	http.HandleFunc("/hello", handleHello)
-// // }
-
-// type ServerOption func(*Server)
-
-// type Server struct {
-// 	// Addr   string
-// 	Port int
-// 	// Router *Router
-// 	// Logger *Logger
-// }
-
-// func NewServer(options ...ServerOption) *Server {
-// 	server := &Server{
-// 		// Addr:   ":8080",
-// 		Port: 8080,
-// 		// Router: NewRouter(),
-// 		// Logger: NewLogger(),
-// 	}
-
-// 	for _, option := range options {
-// 		option(server)
-// 	}
-
-// 	return server
-// }
+func NewServer() *server {
+	s := newServer()
+	return s
+}

@@ -14,5 +14,13 @@ func (s *server) handleHello(w http.ResponseWriter, r *http.Request) http.Handle
 
 		// Return "Method not allowed" if not a GET request
 		fmt.Fprintf(w, "Method not allowed")
+
+		return
+	}
+}
+
+func (s *server) handleIndex() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello World!"))
 	}
 }

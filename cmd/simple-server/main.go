@@ -1,13 +1,10 @@
 package main
 
 import (
-	"log"
+	"github.com/shubydo/simple-server/internal/server"
 )
 
 func main() {
-	s := server.NewServer(
-		server.WithPort(8080),
-	)
-
-	log.Fatal(s.ListenAndServe())
+	s := server.NewServer()
+	s.ServeHTTP(nil, nil)
 }
