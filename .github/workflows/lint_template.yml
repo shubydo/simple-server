@@ -1,0 +1,56 @@
+# GitHub workflow to lint code using super-linter and golangci-lint
+name: Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_call:
+    inputs:
+      go-version:
+        description: 'Go version to use for golangci-lint'
+        type: 'string'
+        required: true
+        default: '1.20'
+      # Go version to use for golangci-lint
+      golangci-lint-version:
+        description: 'golangci-lint version to use'
+        type: 'string'
+        required: true
+        default: 'latest'
+    
+jobs:
+  lint: 
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      # Install Go for golangci-lint
+      - name: "Set up Go ${{ inputs.go-version }}"
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ inputs.go-version }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper
+          # list of changed files within `super-linter`
+          fetch-depth: 0
+          
+      # Use super-linter to lint everything but Go code
+      # https://github.com/github/super-linter/issues/3596
+      - name: Lint
+        uses: github/super-linter/slim@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_GO: false # Use golangci-lint instead
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      
+      # Run golangci-lint
+      - name: Lint Go code
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: ${{ inputs.golangci-lint-version }}
+          args: --issues-exit-code=0 --timeout 5m
