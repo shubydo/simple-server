@@ -20,7 +20,7 @@ vendor/
 # Ignore binary files that are not go files?
 server
 bin
-
+simple-server
 
 # Editor directories and files
 .idea

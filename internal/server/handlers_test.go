@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestHandleHello(t *testing.T) {
+func Test_handleHello(t *testing.T) {
 	tests := []struct {
 		name          string
 		requestMethod string
@@ -29,7 +29,7 @@ func TestHandleHello(t *testing.T) {
 			response := httptest.NewRecorder()
 
 			s := newServer()
-			s.handleHello(response, request)
+			s.handleHello().ServeHTTP(response, request)
 
 			actual := response.Body.String()
 			if actual != tt.expected {

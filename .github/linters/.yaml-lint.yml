@@ -1,0 +1,4 @@
+# Do not require document start "---" and end "..." for each file
+document-start: disable
+# Do not require empty line at the end of file
+empty-lines: disable

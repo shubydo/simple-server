@@ -1,5 +1,7 @@
 # Set variables for the Makefile
 GO_BINARY_NAME = "simple-server"
+GO_BINARY_PATH = "./bin/$(GO_BINARY_NAME)"
+
 LDFLAGS = "-s -w"
 
 # Build the binary and run the tests
@@ -14,12 +16,12 @@ tidy:
 # Build the binary
 build: clean tidy
 	@echo "Building $(GO_BINARY_NAME)..."
-	go build -ldflags $(LDFLAGS) -o $(GO_BINARY_NAME) cmd/$(GO_BINARY_NAME)/
+	go build -ldflags $(LDFLAGS) -o $(GO_BINARY_PATH) "cmd/$(GO_BINARY_NAME)/main.go"
 
 # Run the binary
 run: build
 	@echo "Running $(GO_BINARY_NAME)..."
-	./$(GO_BINARY_NAME)
+	./$(GO_BINARY_PATH)
 
 # Run the tests
 test: clean tidy
@@ -29,5 +31,5 @@ test: clean tidy
 
 # Clean the binary
 clean:
-	@echo "Cleaning $(GO_BINARY_NAME)..."
-	rm -fv $(GO_BINARY_NAME)
+	@echo "Cleaning up generated files..."
+	rm -rfv bin

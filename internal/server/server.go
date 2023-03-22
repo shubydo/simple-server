@@ -1,10 +1,23 @@
 package server
 
-import "net/http"
+import (
+	"net/http"
+
+	"go.uber.org/zap"
+)
 
 type server struct {
 	router *http.ServeMux
-	logger interface{}
+	logger *zap.Logger
+}
+
+func newLogger() *zap.Logger {
+	logger, _ := zap.NewProduction()
+	defer func() {
+		_ = logger.Sync()
+	}()
+
+	return logger
 }
 
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -14,6 +27,7 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func newServer() *server {
 	s := &server{
 		router: http.NewServeMux(),
+		logger: newLogger(),
 	}
 	s.routes()
 
