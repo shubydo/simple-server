@@ -29,6 +29,14 @@ test: clean tidy
 	go clean -testcache
 	go test -v -cover ./...
 
+
+# Run the tests with coverage
+test-coverage: clean tidy
+	@echo "Running tests with coverage..."
+	go clean -testcache
+	go test -v -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out
+
 # Clean the binary
 clean:
 	@echo "Cleaning up generated files..."

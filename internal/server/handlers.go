@@ -2,20 +2,25 @@ package server
 
 import (
 	"fmt"
+	"go.uber.org/zap"
 	"net/http"
 )
 
 func (s *server) handleHello() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		s.logger.Info("Hello page hit")
-		if r.Method == "GET" {
-			fmt.Fprintf(w, "Hello!")
+		s.logger.Info(
+			"Hello page hit",
+			zap.String("method", r.Method),
+			zap.String("url", r.URL.String()),
+		)
+
+		if r.Method != "GET" {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			fmt.Fprintf(w, "Method not allowed")
 			return
 		}
 
-		// Return "Method not allowed" if not a GET request
-
-		fmt.Fprintf(w, "Method not allowed")
+		fmt.Fprintf(w, "Hello!")
 
 		return
 	}
@@ -23,7 +28,12 @@ func (s *server) handleHello() http.HandlerFunc {
 
 func (s *server) handleIndex() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		s.logger.Info("Index page hit")
+		s.logger.Info(
+			"Index page hit",
+			zap.String("method", r.Method),
+			zap.String("url", r.URL.String()),
+		)
+
 		w.Write([]byte("Index!"))
 	}
 }

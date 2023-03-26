@@ -38,3 +38,36 @@ func Test_handleHello(t *testing.T) {
 		})
 	}
 }
+
+func Test_handleIndex(t *testing.T) {
+	tests := []struct {
+		name          string
+		requestMethod string
+		expected      string
+	}{
+		{
+			name:          "Return correct response for GET requests to /",
+			requestMethod: http.MethodGet,
+			expected:      "Index!",
+		},
+		{
+			name:          "Return error message if other method besides GET is made to /",
+			requestMethod: http.MethodPost,
+			expected:      "Method not allowed",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			request, _ := http.NewRequest(tt.requestMethod, "/", nil)
+			response := httptest.NewRecorder()
+
+			s := newServer()
+			s.handleIndex().ServeHTTP(response, request)
+
+			actual := response.Body.String()
+			if actual != tt.expected {
+				t.Fatalf("Actual response body != expected:\nactual:%q\nexpected: %q", actual, tt.expected)
+			}
+		})
+	}
+}
