@@ -10,6 +10,7 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+*coverage*
 
 # Dependency directories (remove the comment below to include it)
 vendor/
@@ -18,7 +19,6 @@ vendor/
 # Ignore binary files that have same name sas directories
 # e.g. /vendor/github.com/golang/protobuf/protoc-gen-go
 # Ignore binary files that are not go files?
-server
 bin
 simple-server
 

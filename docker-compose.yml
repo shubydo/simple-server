@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.30.0
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    depends_on:
+      - simple-server
+  simple-server:
+    build:
+      context: .
+    ports:
+      - 8080:8080

@@ -1,7 +1,7 @@
 name: StaleBot
 on:
   schedule:
-    - cron: "0 23 * * *"
+    - cron: 0 23 * * *
 jobs:
   StaleBot:
     runs-on: ubuntu-latest
@@ -15,12 +15,12 @@ jobs:
       - uses: actions/stale@v5.0.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          stale-issue-message: "Labeled for closure due to inactivity in 10 days."
-          exempt-issue-labels: "bug,roadmap,help-wanted,burning,feature,documentation,operational-excellence,good-first-issue"
-          stale-issue-label: "lifecycle/stale"
-          close-issue-label: "lifecycle/closed"
+          stale-issue-message: Labeled for closure due to inactivity in 10 days.
+          exempt-issue-labels: bug,roadmap,help-wanted,burning,feature,documentation,operational-excellence,good-first-issue
+          stale-issue-label: lifecycle/stale
+          close-issue-label: lifecycle/closed
           remove-stale-when-updated: true
           days-before-stale: 20
           days-before-close: 10
           operations-per-run: 300
-          only-pr-labels: "close-pr-if-stale" # Because we don't want the bot to close PRs for now.
+          only-pr-labels: close-pr-if-stale # Because we don't want the bot to close PRs for now.
