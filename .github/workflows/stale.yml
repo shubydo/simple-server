@@ -9,7 +9,7 @@ jobs:
       issues: write
       discussions: write
       pull-requests: write
-    if: github.repository == 'shubydo/aws'
+    if: github.repository == 'shubydo/simple-server'
     name: Stale issue bot
     steps:
       - uses: actions/stale@v5.0.0
