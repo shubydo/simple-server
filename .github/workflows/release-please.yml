@@ -1,5 +1,4 @@
 ---
-
 name: release-please
 
 on:
@@ -16,10 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: google-github-actions/release-please-action@v3
+        id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: go
-      
+
       - name: Checkout Code
         uses: actions/checkout@v2
 
