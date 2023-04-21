@@ -20,6 +20,7 @@ vendor/
 # e.g. /vendor/github.com/golang/protobuf/protoc-gen-go
 # Ignore binary files that are not go files?
 bin
+tmp
 simple-server
 
 # Editor directories and files
