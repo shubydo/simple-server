@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   assign-author:
-    name: Assign ${{ github.actor }} to ${{ github.action.event.issue.number }}
+    name: Assign ${{ github.actor }} to ${{ github.event.issue.number || github.event.pull_request.number }}
     runs-on: ubuntu-latest
     steps:
       - uses: toshimaru/auto-author-assign@v1.6.0

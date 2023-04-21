@@ -1,4 +1,4 @@
-FROM golang:1.20.2 AS build
+FROM golang:1.20.3 AS build
 
 WORKDIR /app
 COPY . .
@@ -8,9 +8,10 @@ FROM build AS test
 RUN make test
 
 FROM scratch AS final
+ARG PORT=8080
 
 # Copy binary created in "build" stage
-COPY --from=build /app/simple-server .
-EXPOSE 8080
+COPY --from=build /app/simple-server /simple-server
+EXPOSE $PORT
 
-ENTRYPOINT ["/simple-server"]
+ENTRYPOINT ["/simple-server", "start", "--port", "$PORT"]

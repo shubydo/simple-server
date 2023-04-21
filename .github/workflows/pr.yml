@@ -1,4 +1,3 @@
----
 name: Pull Request
 
 on:
@@ -7,7 +6,8 @@ on:
       - main
 
 env:
-  GO_VERSION: "1.20.2"
+  GO_VERSION_FILE: ./go.mod
+  GOLANGCI_LINT_VERSION: v1.52.2
 
 defaults:
   run:
@@ -15,7 +15,7 @@ defaults:
 
 # Lint, run go tests, and build the binary
 jobs:
-  lint: 
+  lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
@@ -25,15 +25,30 @@ jobs:
           # Full git history is needed to get a proper
           # list of changed files within `super-linter`
           fetch-depth: 0
-          
-      # Use super-linter to lint the code
-      - name: Lint
-        uses: github/super-linter/slim@v4
+
+      - name: Setup shared super-linter environment variables
+        run: cat .github/super-linter.env >> "$GITHUB_ENV"
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: ${{ env.GO_VERSION_FILE }}
+
+      # Run super-linter to lint all files except Go
+      # Exclusions are defined in .github/super-linter.env
+      - name: Run super-linter (EXCLUDING go)
+        uses: github/super-linter/slim@v5
         env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+          DEFAULT_BRANCH: main
+
+      # Use golangci-lint to lint the Go code
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: "${{ env.GOLANGCI_LINT_VERSION }}"
+          # args: --timeout 5m
+
   # Check if unused dependencies are present using go mod tidy -v
   tidy:
     name: Tidy
@@ -42,11 +57,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: "Set up Go ${{ env.GO_VERSION }}"
-        uses: actions/setup-go@v2
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          go-version: ${{ env.GO_VERSION }}
-      
+          go-version-file: ${{ env.GO_VERSION_FILE }}
+
       - name: Check go dependencies
         run: make tidy
 
@@ -65,27 +80,36 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: "Set up Go ${{ env.GO_VERSION }}"
-        uses: actions/setup-go@v2
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          go-version: ${{ env.GO_VERSION }}
-      
+          go-version-file: ${{ env.GO_VERSION_FILE }}
+
       - name: Install Go dependencies
         run: make tidy
 
-      # Run go tests
-      - name: Test
-        run: make test
+      # Run go tests and post coverage as a PR comment
 
+      # Post coverage as a PR comment without codecov
+      - name: Run go tests
+        id: test
+        run: |
+          GO_TEST_RESULTS_FILE_PATH="$GITHUB_WORKSPACE/coverage.txt"
+          go test -v -coverprofile="$GO_TEST_RESULTS_FILE_PATH" -covermode=atomic ./...
 
-      # # Run go tests and post coverage as a comment
-      # - name: Test
-      #   uses: codecov/codecov-action@v2
+          # Store the path to the test results file as an output
+          echo "GO_TEST_RESULTS_FILE_PATH=$GO_TEST_RESULTS_FILE_PATH" >> "$GITHUB_ENV"
+
+      # - name: Publish test results as comment
+      #   uses: ./.github/actions/upsert-comment # uses an action in the repository
       #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     fail_ci_if_error: true
-      #     verbose: true
-  
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     body: |
+      #       ## Test Coverage
+      #       | File | Coverage |
+      #       | --- | --- |
+      #       $(cat  ${{ test.outputs.GO_TEST_RESULTS_FILE_PATH }} | awk -F'[: ]' '{print "| " $1 " | " $3 " |"}' | sort)
+      #     previous_body_includes: "## Test Coverage"
 
   build:
     name: Build
@@ -94,12 +118,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: "Set up Go ${{ env.GO_VERSION }}"
-        uses: actions/setup-go@v2
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          go-version: ${{ env.GO_VERSION }}
+          go-version-file: ${{ env.GO_VERSION_FILE }}
 
-          
       # Build the binary
       - name: Build
         run: make build

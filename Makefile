@@ -1,11 +1,37 @@
 # Set variables for the Makefile
 GO_BINARY_NAME = "simple-server"
 GO_BINARY_PATH = "./bin/$(GO_BINARY_NAME)"
-
+GO_PROJECT_PATH = "./cmd"
+GOLANGCI_LINT_VERSION = "v1.52.2"
 LDFLAGS = "-s -w"
+
+# Use arguments passed to the make command
+ARGS = $(filter-out $@,$(MAKECMDGOALS))
+
 
 # Build the binary and run the tests
 all: build test
+
+.PHONY: all build run test test-coverage clean tidy lint super-lint golangci-lint
+super-lint:
+	@echo "Linting all code EXCEPT GO with super-lint..."
+	docker run --rm --name super-lint \
+	    --env-file ".github/super-linter.env" \
+		-v $(shell pwd):/tmp/lint \
+		-e RUN_LOCAL=true \
+		github/super-linter:slim-v5
+
+golangci-lint:
+	@echo "Linting all Go code with golangci-lint"
+	docker run --rm --name golangci-lint  \
+		-v $(shell pwd):/app \
+		-v ~/.cache/golangci-lint/$(GOLANGCI_LINT_VERSION)/root/.cache  \
+		-w /app \
+		golangci/golangci-lint:$(GOLANGCI_LINT_VERSION) \
+		golangci-lint run -v
+
+lint: super-lint golangci-lint
+	@echo "Linting..."
 
 # tidy the go.mod file
 tidy:
@@ -16,7 +42,7 @@ tidy:
 # Build the binary
 build: clean tidy
 	@echo "Building $(GO_BINARY_NAME)..."
-	go build -ldflags $(LDFLAGS) -o $(GO_BINARY_PATH) "cmd/$(GO_BINARY_NAME)/main.go"
+	go build -ldflags $(LDFLAGS) -o $(GO_BINARY_PATH) $(GO_PROJECT_PATH)
 
 # Run the binary
 run: build
