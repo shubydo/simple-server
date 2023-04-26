@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-server
+  labels:
+    app.kubernetes.io/name: simple-server
+    app.kubernetes.io/instance: simple-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: simple-server
+      app.kubernetes.io/instance: simple-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: simple-server
+        app.kubernetes.io/instance: simple-server
+    spec:
+      serviceAccountName: simple-server
+      securityContext:
+        {}
+      containers:
+        - name: simple-server
+          securityContext:
+            allowPrivilegeEscalation: false
+#            capabilities:
+#              drop:
+#                -
+#            readOnlyRootFilesystem: true
+
+          image: "shubydo/simple-server:v0.0.1"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          resources:
+            limits:
+                cpu: 100m
+                memory: 128Mi
+            requests:
+                cpu: 10m
+                memory: 32Mi
+          volumeMounts:
+            - name: simple-server-aws-credentials
+              mountPath: /etc/aws
+              readOnly: true
+            - name: simple-server-aws-credentials
+              mountPath: /root/.aws
+              readOnly: true
+      volumes:
+        - name: simple-server-aws-credentials
+          secret:
+            secretName: simple-server-aws-credentials

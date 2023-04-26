@@ -1,14 +1,12 @@
-//nolint:golangci-lint S1023
 package server
 
 import (
-	"fmt"
 	"net/http"
 
 	"go.uber.org/zap"
 )
 
-func (s *server) handleHello() http.HandlerFunc {
+func (s *Server) handleHello() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		s.logger.Info(
 			"handleHello called",
@@ -18,13 +16,15 @@ func (s *server) handleHello() http.HandlerFunc {
 
 		if r.Method != http.MethodGet {
 			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method not allowed")
-
+			_, err := w.Write([]byte(`Method not allowed`))
+			if err != nil {
+				s.logger.Error("Error writing response", zap.Error(err))
+				return
+			}
 			return
 		}
 
 		w.WriteHeader(http.StatusOK)
-
 		_, err := w.Write([]byte(`Hello!`))
 		if err != nil {
 			s.logger.Error("Error writing response", zap.Error(err))
@@ -32,7 +32,7 @@ func (s *server) handleHello() http.HandlerFunc {
 	}
 }
 
-func (s *server) handleIndex() http.HandlerFunc {
+func (s *Server) handleIndex() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		s.logger.Info(
 			"handleIndex called",
@@ -40,6 +40,7 @@ func (s *server) handleIndex() http.HandlerFunc {
 			zap.String("url", r.URL.String()),
 		)
 
+		// w.WriteHeader(http.StatusOK)
 		_, err := w.Write([]byte("Index!"))
 		if err != nil {
 			s.logger.Error("Error writing response", zap.Error(err))
@@ -49,7 +50,7 @@ func (s *server) handleIndex() http.HandlerFunc {
 }
 
 //nolint:unused
-func (s *server) handleNotFound() http.HandlerFunc {
+func (s *Server) handleNotFound() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		s.logger.Info(
 			"handleNotFound called",
@@ -59,6 +60,23 @@ func (s *server) handleNotFound() http.HandlerFunc {
 
 		w.WriteHeader(http.StatusNotFound)
 		_, err := w.Write([]byte("404!"))
+		if err != nil {
+			s.logger.Error("Error writing response", zap.Error(err))
+			return
+		}
+	}
+}
+
+func (s *Server) handleHealthz() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		s.logger.Info(
+			"handleHealthz called",
+			zap.String("method", r.Method),
+			zap.String("url", r.URL.String()),
+		)
+
+		w.WriteHeader(http.StatusOK)
+		_, err := w.Write([]byte("OK"))
 		if err != nil {
 			s.logger.Error("Error writing response", zap.Error(err))
 			return

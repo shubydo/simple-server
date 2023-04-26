@@ -8,8 +8,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/shubydo/simple-server/internal/server"
 	"github.com/spf13/cobra"
+
+	"github.com/shubydo/simple-server/internal/server"
 )
 
 var port int
@@ -31,7 +32,7 @@ Example:
 	
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Pass in the port
+		// parse flags
 		s := server.New(
 			server.WithPort(port),
 		)
@@ -71,5 +72,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	startCmd.Flags().IntVarP(&port, "port", "p", server.DefaultPort, "The port to listen on")
+	startCmd.PersistentFlags().IntVarP(&port, "port", "p", server.DefaultPort, "The port to listen on")
 }
