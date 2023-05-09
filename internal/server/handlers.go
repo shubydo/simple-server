@@ -8,12 +8,12 @@ import (
 
 func (s *Server) handleHello() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		s.logger.Info(
-			"handleHello called",
-			zap.String("method", r.Method),
-			zap.String("url", r.URL.String()),
-			zap.Any("headers", r.Header),
-		)
+		// s.logger.Info(
+		// 	"handleHello called",
+		// 	zap.String("method", r.Method),
+		// 	zap.String("url", r.URL.String()),
+		// 	zap.Any("headers", r.Header),
+		// )
 
 		if r.Method != http.MethodGet {
 			w.WriteHeader(http.StatusMethodNotAllowed)
@@ -113,8 +113,8 @@ func (s *Server) logMiddleware(next http.Handler) http.Handler {
 			zap.String("method", r.Method),
 			zap.String("path", r.URL.Path),
 		)
-		s.router.ServeHTTP(w, r)
 
+		s.router.ServeHTTP(w, r)
 	})
 
 	// return func(next http.Handler) http.Handler {

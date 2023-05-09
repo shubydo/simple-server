@@ -64,5 +64,5 @@ func newLogger() *zap.Logger {
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.logger.Info("Request received", zap.String("method", r.Method), zap.String("path", r.URL.Path))
-	s.router.ServeHTTP(w, r)
+	s.logMiddleware(s.router).ServeHTTP(w, r)
 }
