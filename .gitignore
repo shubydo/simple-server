@@ -28,3 +28,6 @@ simple-server
 .vscode
 *.swp*
 .DS_Store
+
+# Kustomize
+output.yaml

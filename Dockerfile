@@ -1,17 +1,35 @@
-FROM golang:1.20.3 AS build
+FROM golang:1.20.3 AS cache
+
+WORKDIR /app
+COPY go.* .
+RUN go mod download
+
+FROM cache AS build
 
 WORKDIR /app
 COPY . .
-RUN CGO_ENABLED=0 go build -o simple-server
+
+ENV GOOS=linux \
+    GOARCH=amd64 \
+    CGO_ENABLED=0 \
+    GO111MODULE=on
+
+RUN go build -o simple-server
 
 FROM build AS test
 RUN make test
 
 FROM scratch AS final
-ARG PORT=8080
+
+# TODO: Set default port if not provided
+ARG PORT=7777
+ENV PORT=${PORT}
+
+
 
 # Copy binary created in "build" stage
 COPY --from=build /app/simple-server /simple-server
-EXPOSE $PORT
 
-ENTRYPOINT ["/simple-server", "start", "--port", "$PORT"]
+ENTRYPOINT [ "/simple-server"]
+CMD ["start", "start", "-p", "8080"]
+#CMD ["start", "start", "-p", "$PORT"]

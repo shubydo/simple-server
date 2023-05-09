@@ -1,4 +1,4 @@
-version: "3"
+# version: "3"
 
 services:
   prometheus:
@@ -11,6 +11,10 @@ services:
       - simple-server
   simple-server:
     build:
-      context: .
+        context: .
+        dockerfile: Dockerfile
+        args:
+          - PORT="1234"
+
     ports:
-      - 8080:8080
+        - 80:80
