@@ -22,7 +22,7 @@ var startCmd = &cobra.Command{
 
 	Example: "simple-server start",
 	Short:   "Start the server",
-	Long: `Start the server and listen for requests. 
+	Long: `Start the server and listen for requests.
 
 Example:
 	simple-server start

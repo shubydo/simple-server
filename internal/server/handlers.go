@@ -12,6 +12,7 @@ func (s *Server) handleHello() http.HandlerFunc {
 			"handleHello called",
 			zap.String("method", r.Method),
 			zap.String("url", r.URL.String()),
+			zap.Any("headers", r.Header),
 		)
 
 		if r.Method != http.MethodGet {
@@ -38,9 +39,10 @@ func (s *Server) handleIndex() http.HandlerFunc {
 			"handleIndex called",
 			zap.String("method", r.Method),
 			zap.String("url", r.URL.String()),
+			zap.Any("headers", r.Header),
 		)
 
-		// w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusOK)
 		_, err := w.Write([]byte("Index!"))
 		if err != nil {
 			s.logger.Error("Error writing response", zap.Error(err))
@@ -84,9 +86,43 @@ func (s *Server) handleHealthz() http.HandlerFunc {
 	}
 }
 
+func (s *Server) handleReadyz() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+
+		_, err := w.Write([]byte("OK"))
+		if err != nil {
+			s.logger.Error("Error writing response", zap.Error(err))
+			return
+		}
+	}
+}
+
 // func (s *server) metricsHandler() http.HandlerFunc {
 // 	return func(w http.ResponseWriter, r *http.Request) {
 // 		// w.WriteHeader(http.StatusOK)
 // 		// w.Write([]byte("Metrics!"))
 // 	}
 // }
+
+// logMiddleware is a middleware that logs the request.
+func (s *Server) logMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		s.logger.Info(
+			"Request received",
+			zap.String("method", r.Method),
+			zap.String("path", r.URL.Path),
+		)
+		s.router.ServeHTTP(w, r)
+
+	})
+
+	// return func(next http.Handler) http.Handler {
+	// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// 		s.logger.Info(
+	// 			"Request received",
+	// 			zap.String("method", r.Method),
+	// 			zap.String("path", r.URL.Path),
+	// 		)
+
+}

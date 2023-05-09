@@ -19,15 +19,15 @@ spec:
     spec:
       serviceAccountName: simple-server
       securityContext:
-        {}
+        { }
       containers:
         - name: simple-server
           securityContext:
             allowPrivilegeEscalation: false
-#            capabilities:
-#              drop:
-#                -
-#            readOnlyRootFilesystem: true
+          #            capabilities:
+          #              drop:
+          #                -
+          #            readOnlyRootFilesystem: true
 
           image: "shubydo/simple-server:v0.0.1"
           imagePullPolicy: IfNotPresent
@@ -41,15 +41,15 @@ spec:
               port: http
           readinessProbe:
             httpGet:
-              path: /healthz
+              path: /readyz
               port: http
           resources:
             limits:
-                cpu: 100m
-                memory: 128Mi
+              cpu: 100m
+              memory: 128Mi
             requests:
-                cpu: 10m
-                memory: 32Mi
+              cpu: 10m
+              memory: 32Mi
           volumeMounts:
             - name: simple-server-aws-credentials
               mountPath: /etc/aws

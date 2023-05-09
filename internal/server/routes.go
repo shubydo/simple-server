@@ -10,4 +10,5 @@ func (s *Server) routes() {
 	s.router.HandleFunc("/", s.handleIndex())
 	s.router.HandleFunc("/hello", s.handleHello())
 	s.router.HandleFunc("/healthz", s.handleHealthz())
+	s.router.HandleFunc("/readyz", s.handleReadyz())
 }
