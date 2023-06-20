@@ -27,7 +27,15 @@ runs:
         body-includes: ${{ inputs.previous_body_includes }}
 
     # Update existing comment and handle errors
-    
+    - name: Print comment ID
+      shell: bash
+      run: |
+        if [[ "${{ steps.fc.outputs.comment-id }}" == "0" ]]; then
+          echo "No existing comment found"
+        else
+          echo "Comment ID: ${{ steps.fc.outputs.comment-id }}"
+        fi
+
     - name: Update existing comment matching ${{ inputs.previous_body_includes }}
       uses: peter-evans/create-or-update-comment@v2
       if: steps.fc.outputs.comment-id != 0 
@@ -36,7 +44,7 @@ runs:
         body: ${{ inputs.body }}
         reactions: ${{ inputs.reactions }}
         edit-mode: replace
-    
+
     # Create comment if no existing comment
     - name: Create comment
       uses: peter-evans/create-or-update-comment@v2
