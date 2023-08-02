@@ -67,3 +67,11 @@ test-coverage: clean tidy
 clean:
 	@echo "Cleaning up generated files..."
 	rm -rfv coverage.* $(GO_BINARY_PATH) 
+
+# Install CI tools
+# TODO: move to script or a dedicated `tools` package
+.PHONY: tools
+tools:
+	@echo "Installing CI tools..."
+	@echo "Installing cosmtrek/air..."
+	go install github.com/cosmtrek/air@latest
