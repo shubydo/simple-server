@@ -19,13 +19,13 @@ super-lint:
 	    --env-file ".github/super-linter.env" \
 		-v $(shell pwd):/tmp/lint \
 		-e RUN_LOCAL=true \
-		github/super-linter:slim-v5
+		super-linter/super-linter/slim@v5
 
 golangci-lint:
 	@echo "Linting all Go code with golangci-lint"
 	docker run --rm --name golangci-lint  \
 		-v $(shell pwd):/app \
-		-v ~/.cache/golangci-lint/$(GOLANGCI_LINT_VERSION)/root/.cache  \
+		-v ~/.cache/golangci-lint/$(GOLANGCI_LINT_VERSION):/root/.cache  \
 		-w /app \
 		golangci/golangci-lint:$(GOLANGCI_LINT_VERSION) \
 		golangci-lint run -v
@@ -66,4 +66,4 @@ test-coverage: clean tidy
 # Clean the binary
 clean:
 	@echo "Cleaning up generated files..."
-	rm -rfv bin
+	rm -rfv coverage.* $(GO_BINARY_PATH) 
