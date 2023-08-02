@@ -66,4 +66,4 @@ test-coverage: clean tidy
 # Clean the binary
 clean:
 	@echo "Cleaning up generated files..."
-	rm -rfv bin
+	rm -rfv coverage.* $(GO_BINARY_PATH) 

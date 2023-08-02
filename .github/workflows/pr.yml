@@ -6,7 +6,8 @@ on:
       - main
 
 env:
-  GO_VERSION_FILE: ./go.mod
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GO_VERSION_FILE: ./go.mod # Use the latest patch version of Go defined in go.mod
   GOLANGCI_LINT_VERSION: v1.52.2
 
 defaults:
@@ -39,8 +40,8 @@ jobs:
       - name: Run super-linter (EXCLUDING go)
         uses: github/super-linter/slim@v5
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Use golangci-lint to lint the Go code
       - name: Run golangci-lint
@@ -99,6 +100,30 @@ jobs:
 
           # Store the path to the test results file as an output
           echo "GO_TEST_RESULTS_FILE_PATH=$GO_TEST_RESULTS_FILE_PATH" >> "$GITHUB_ENV"
+
+      # - name: Test
+      #   id: test
+      #   run: make test
+
+      # - name: Post comment
+      #   uses: peter-evans/create-or-update-comment@v1
+      #   with:
+      #     issue-number: ${{ github.event.pull_request.number }}
+      #     body: |
+      #       ## Test Results
+      #       ${{ steps.test.outputs.stdout }}
+
+      # Post coverage as a PR comment without codecov
+      # - name: Publish test results as comment
+      #   run: |
+      #     go test -v -coverprofile=coverage.txt -covermode=atomic ./...
+
+      #     # Check if comment already exists
+      #     if [[ -n "$(gh pr comment ${{ github.event.pull_request.number }} | grep "Coverage")" ]]; then
+      #       echo "Coverage comment already exists. Deleting it..."
+      #       gh pr comment ${{ github.event.pull_request.number }} --delete
+      #     fi
+      #     gh pr comment ${{ github.event.pull_request.number }} --body "$(cat coverage.txt)"
 
       # - name: Publish test results as comment
       #   uses: ./.github/actions/upsert-comment # uses an action in the repository
