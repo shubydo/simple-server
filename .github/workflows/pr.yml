@@ -38,7 +38,7 @@ jobs:
       # Run super-linter to lint all files except Go
       # Exclusions are defined in .github/super-linter.env
       - name: Run super-linter (EXCLUDING go)
-        uses: super-linter/super-linter/slim@v5
+        uses: github/super-linter/slim@v5
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
