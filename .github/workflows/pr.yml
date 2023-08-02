@@ -94,22 +94,10 @@ jobs:
       - name: Run go tests
         id: test
         run: |
-          GO_TEST_RESULTS_FILE_PATH="$GITHUB_WORKSPACE/coverage.txt"
-          go test -v -coverprofile="$GO_TEST_RESULTS_FILE_PATH" -covermode=atomic ./...
+          GO_TEST_RESULTS_FILE_PATH="$GITHUB_WORKSPACE/test_results.xml"
 
           # Store the path to the test results file as an output
           echo "GO_TEST_RESULTS_FILE_PATH=$GO_TEST_RESULTS_FILE_PATH" >> "$GITHUB_ENV"
-
-      # - name: Publish test results as comment
-      #   uses: ./.github/actions/upsert-comment # uses an action in the repository
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     body: |
-      #       ## Test Coverage
-      #       | File | Coverage |
-      #       | --- | --- |
-      #       $(cat  ${{ test.outputs.GO_TEST_RESULTS_FILE_PATH }} | awk -F'[: ]' '{print "| " $1 " | " $3 " |"}' | sort)
-      #     previous_body_includes: "## Test Coverage"
 
   build:
     name: Build
