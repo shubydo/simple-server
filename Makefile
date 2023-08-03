@@ -1,13 +1,12 @@
 # Set variables for the Makefile
-GO_BINARY_NAME = "simple-server"
-GO_BINARY_PATH = "./bin/$(GO_BINARY_NAME)"
-GO_PROJECT_PATH = "./cmd"
-GOLANGCI_LINT_VERSION = "v1.52.2"
-LDFLAGS = "-s -w"
+GO_BINARY_NAME = simple-server
+GO_BINARY_PATH = ./bin/$(GO_BINARY_NAME)
+GO_PROJECT_PATH = ./cmd
+GOLANGCI_LINT_VERSION = v1.52.2
+LDFLAGS = -s -w
 
 # Use arguments passed to the make command
 ARGS = $(filter-out $@,$(MAKECMDGOALS))
-
 
 # Build the binary and run the tests
 all: build test
@@ -66,7 +65,7 @@ test-coverage: clean tidy
 # Clean the binary
 clean:
 	@echo "Cleaning up generated files..."
-	rm -rfv coverage.* $(GO_BINARY_PATH) 
+	rm -rfv coverage.* $(GO_BINARY_PATH) tmp
 
 # Install CI tools
 # TODO: move to script or a dedicated `tools` package
@@ -75,3 +74,5 @@ tools:
 	@echo "Installing CI tools..."
 	@echo "Installing cosmtrek/air..."
 	go install github.com/cosmtrek/air@latest
+
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
