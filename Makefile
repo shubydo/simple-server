@@ -2,7 +2,7 @@
 GO_BINARY_NAME = simple-server
 GO_BINARY_PATH = ./bin/$(GO_BINARY_NAME)
 GO_PROJECT_PATH = ./cmd
-GOLANGCI_LINT_VERSION = v1.52.2
+GOLANGCI_LINT_VERSION = v1.53.3
 LDFLAGS = -s -w
 
 # Use arguments passed to the make command
