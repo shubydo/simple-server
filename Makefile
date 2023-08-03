@@ -75,4 +75,5 @@ tools:
 	@echo "Installing cosmtrek/air..."
 	go install github.com/cosmtrek/air@latest
 
+	@echo "Installing golangci/golangci-lint..."
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
