@@ -257,7 +257,7 @@ linters:
     - ireturn # accept interfaces, return concrete types
     - prealloc # [premature optimization, but can be used in some cases] finds slice declarations that could potentially be preallocated
     - tagalign # checks that struct tags are well aligned
-    - varnamelen # [great idea, but too many false positives] checks that the length of a variable's name matches its scope
+    # - varnamelen # [great idea, but too many false positives] checks that the length of a variable's name matches its scope
     - wrapcheck # checks that errors returned from external packages are wrapped
     - zerologlint # detects the wrong usage of zerolog that a user forgets to dispatch zerolog.Event
 
@@ -320,6 +320,7 @@ issues:
         - gosec
         - noctx
         - wrapcheck
-# output:
-#   format: junit-xml
-#   path: report.xml
+
+output:
+  format: junit-xml
+  path: report.xml

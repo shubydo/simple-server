@@ -8,9 +8,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/spf13/cobra"
-
 	"github.com/shubydo/simple-server/internal/server"
+	"github.com/spf13/cobra"
 )
 
 var port int
@@ -19,6 +18,7 @@ var port int
 var startCmd = &cobra.Command{
 	Use:       "start",
 	ValidArgs: []string{"start"},
+	Aliases:   []string{"s", "run", "r", "up", "u"},
 
 	Example: "simple-server start",
 	Short:   "Start the server",
@@ -33,6 +33,15 @@ Example:
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// parse flags
+		err := cmd.Flags().Parse(args)
+		if err != nil {
+			log.Fatalf("Failed to parse flags: %v", err)
+		}
+
+		if port < 1 || port > 65535 {
+			log.Fatalf("Invalid port: %d", port)
+		}
+
 		s := server.New(
 			server.WithPort(port),
 		)
