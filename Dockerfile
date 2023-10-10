@@ -19,10 +19,11 @@ RUN go build -o simple-server
 FROM build AS test
 RUN make test
 
-FROM scratch AS final
+# FROM scratch AS final
+# Use alpine as base image for go binary
+FROM alpine:3.14.0 AS final
 
 # Copy binary created in "build" stage
 COPY --from=build /app/simple-server /simple-server
 
-ENTRYPOINT [ "/simple-server"]
-CMD ["start", "-p", "8080"]
+ENTRYPOINT [ "/simple-server", "start", "--port", "8080"]
