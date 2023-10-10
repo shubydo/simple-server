@@ -16,10 +16,10 @@ spec:
       labels:
         app.kubernetes.io/name: simple-server
         app.kubernetes.io/instance: simple-server
+
     spec:
       serviceAccountName: simple-server
-      securityContext:
-        { }
+      securityContext: {}
       containers:
         - name: simple-server
           securityContext:
@@ -50,14 +50,4 @@ spec:
             requests:
               cpu: 10m
               memory: 32Mi
-          volumeMounts:
-            - name: simple-server-aws-credentials
-              mountPath: /etc/aws
-              readOnly: true
-            - name: simple-server-aws-credentials
-              mountPath: /root/.aws
-              readOnly: true
-      volumes:
-        - name: simple-server-aws-credentials
-          secret:
-            secretName: simple-server-aws-credentials
+    
