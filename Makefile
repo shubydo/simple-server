@@ -1,9 +1,8 @@
 # Set variables for the Makefile
 GO_BINARY_NAME = simple-server
 GO_BINARY_PATH = ./bin/$(GO_BINARY_NAME)
-GO_PROJECT_PATH = ./cmd
 GOLANGCI_LINT_VERSION = v1.53.3
-LDFLAGS = -s -w
+LDFLAGS = "-s -w"
 
 # Use arguments passed to the make command
 ARGS = $(filter-out $@,$(MAKECMDGOALS))
@@ -41,7 +40,7 @@ tidy:
 # Build the binary
 build: clean tidy
 	@echo "Building $(GO_BINARY_NAME)..."
-	go build -ldflags $(LDFLAGS) -o $(GO_BINARY_PATH) $(GO_PROJECT_PATH)
+	go build -ldflags=$(LDFLAGS) -o $(GO_BINARY_PATH) 
 
 # Run the binary
 run: build
