@@ -14,7 +14,7 @@ ENV GOOS=linux \
     CGO_ENABLED=0 \
     GO111MODULE=on
 
-RUN go build -o simple-server
+RUN make build
 
 FROM build AS test
 RUN make test
